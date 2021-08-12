@@ -3,12 +3,12 @@ using System.IO;
 
 namespace FileStore
 {
-    public class FileStorage
+    public class MessageStore
     {
         private readonly StoreCache cache;
         private readonly StoreLogger log;
 
-        public FileStorage(DirectoryInfo workingDirectory)
+        public MessageStore(DirectoryInfo workingDirectory)
         {
             if (workingDirectory == null)
                 throw new ArgumentNullException("workingDirectory");
