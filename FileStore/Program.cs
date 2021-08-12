@@ -1,15 +1,11 @@
-﻿using System.Runtime.Caching;
-
-namespace FileStore
+﻿namespace FileStore
 {
     class Program
     {
         static void Main(string[] args)
         {
             var workingDirectory = "C:\\Users\\Andre\\Desktop";
-            var fileStorage = new FileStorage(
-                workingDirectory,
-                new MemoryCache("FileStorage"));
+            var fileStorage = new FileStorage(workingDirectory);
 
             fileStorage.Save(1, "my message");
 

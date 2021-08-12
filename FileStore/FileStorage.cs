@@ -1,17 +1,18 @@
-﻿using System.IO;
+﻿using System.Collections.Concurrent;
+using System.IO;
 using System.Runtime.Caching;
 
 namespace FileStore
 {
     public class FileStorage
     {
+        private readonly ConcurrentDictionary<int, string> cache;
         private readonly StoreLogger log;
 
-        public FileStorage(string workingDirectory, MemoryCache cache)
+        public FileStorage(string workingDirectory)
         {
             this.WorkingDirectory = workingDirectory;
-            this.Cache = cache;
-
+            this.cache = new ConcurrentDictionary<int, string>();
             this.log = new StoreLogger();
         }
 
