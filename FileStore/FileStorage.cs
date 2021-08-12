@@ -1,15 +1,18 @@
-﻿using Serilog;
-using System.IO;
+﻿using System.IO;
 using System.Runtime.Caching;
 
 namespace FileStore
 {
     public class FileStorage
     {
+        private readonly StoreLogger log;
+
         public FileStorage(string workingDirectory, MemoryCache cache)
         {
             this.WorkingDirectory = workingDirectory;
             this.Cache = cache;
+
+            this.log = new StoreLogger();
         }
 
         public string WorkingDirectory { get; set; }
@@ -17,29 +20,25 @@ namespace FileStore
 
         public void Save(int id, string message)
         {
-            Log.Information("Saving message {id},", id);
-
+            log.Saving(id);
             var path = this.GetFileName(id);
 
             if (!File.Exists(path))
                 File.Create(path).Close();
 
             File.WriteAllText(path, message);
-
             Cache.Add(new CacheItem(path, message), new CacheItemPolicy());
-
-            Log.Information("Saved message {id},", id);
+            log.Saved(id);
         }
 
         public Maybe<string> Read(int id)
         {
-            Log.Debug("Reading message {id},", id);
-
+            log.Reading(id);
             var path = this.GetFileName(id);
 
             if (!File.Exists(path))
             {
-                Log.Debug("No message {id} found.", id);
+                log.DidNotFound(id);
                 return new Maybe<string>();
             }
 
@@ -48,8 +47,7 @@ namespace FileStore
                 File.ReadAllText(path) :
                 messageInCache.Value.ToString();
 
-            Log.Debug("Returning message {id},", id);
-
+            log.Returning(id);
             return new Maybe<string>(message);
         }
 
