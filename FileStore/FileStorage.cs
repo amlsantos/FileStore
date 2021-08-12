@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.IO;
 
 namespace FileStore
 {
     public class FileStorage
     {
-        private readonly ConcurrentDictionary<int, string> cache;
+        private readonly StoreCache cache;
         private readonly StoreLogger log;
 
         public FileStorage(DirectoryInfo workingDirectory)
@@ -17,7 +16,7 @@ namespace FileStore
                 throw new ArgumentException("Boo", "workingDirectory");
 
             this.WorkingDirectory = workingDirectory;
-            this.cache = new ConcurrentDictionary<int, string>();
+            this.cache = new StoreCache();
             this.log = new StoreLogger();
         }
 
@@ -28,7 +27,7 @@ namespace FileStore
             this.log.Saving(id);
             var file = this.GetFileInfo(id);
             File.WriteAllText(file.FullName, message);
-            this.cache.AddOrUpdate(id, message, (i, m) => message);
+            this.cache.AddOrUpdate(id, message);
             this.log.Saved(id);
         }
 
@@ -37,7 +36,7 @@ namespace FileStore
             log.Reading(id);
             var file = this.GetFileInfo(id);
 
-            if (!file.Exists)
+            if (!File.Exists(file.FullName))
             {
                 this.log.DidNotFound(id);
                 return new Maybe<string>();
