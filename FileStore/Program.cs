@@ -1,13 +1,19 @@
-﻿namespace FileStore
+﻿using System.Runtime.Caching;
+
+namespace FileStore
 {
     class Program
     {
         static void Main(string[] args)
         {
             var workingDirectory = "C:\\Users\\Andre\\Desktop";
-            var fileStorage = new FileStorage(workingDirectory);
+            var fileStorage = new FileStorage(
+                workingDirectory,
+                new MemoryCache("FileStorage"));
 
-            fileStorage.Save(12, "message");
+            fileStorage.Save(1, "my message");
+
+            var message = fileStorage.Read(1);
         }
     }
 }
