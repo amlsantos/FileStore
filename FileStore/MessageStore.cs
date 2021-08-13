@@ -1,5 +1,5 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
+using System.Linq;
 
 namespace FileStore
 {
@@ -7,12 +7,7 @@ namespace FileStore
     {
         public MessageStore(DirectoryInfo workingDirectory)
         {
-            if (workingDirectory == null)
-                throw new ArgumentNullException("workingDirectory");
-            if (!workingDirectory.Exists)
-                throw new ArgumentException("Boo", "workingDirectory");
-
-            this.WorkingDirectory = workingDirectory;
+            WorkingDirectory = workingDirectory;
         }
 
         public DirectoryInfo WorkingDirectory { get; set; }
@@ -20,8 +15,7 @@ namespace FileStore
         public void Save(int id, string message)
         {
             Logger.Saving(id);
-            var file = Store.GetFileInfo(id, WorkingDirectory.FullName);
-            Store.WriteAllText(file.FullName, message);
+            Store.WriteAllText(id, message);
             Cache.AddOrUpdate(id, message);
             Logger.Saved(id);
         }
@@ -29,25 +23,23 @@ namespace FileStore
         public Maybe<string> Read(int id)
         {
             Logger.Reading(id);
-            var file = Store.GetFileInfo(id, WorkingDirectory.FullName);
-            if (!file.Exists)
-            {
+            var message = Cache.GetOrAdd(id,
+                _ => Store.ReadAllext(id));
+
+            if (message.Any())
+                Logger.Returning(id);
+            else
                 Logger.DidNotFound(id);
-                return new Maybe<string>();
-            }
 
-            var message = Cache.GetOrAdd(id, _ => Store.ReadAllext(file.FullName));
-            Logger.Returning(id);
-
-            return new Maybe<string>(message);
+            return message;
         }
 
         protected virtual IStore Store
         {
-            get { return new FileStore(); }
+            get { return new FileStore(WorkingDirectory); }
         }
 
-        public virtual StoreCache Cache
+        public virtual IStoreCache Cache
         {
             get { return new StoreCache(); }
         }

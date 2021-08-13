@@ -4,8 +4,8 @@ namespace FileStore
 {
     public interface IStore
     {
-        public FileInfo GetFileInfo(int id, string workingDirectory);
-        public string ReadAllext(string path);
-        public void WriteAllText(string path, string message);
+        public Maybe<string> ReadAllext(int id);
+        public void WriteAllText(int id, string message);
+        public FileInfo GetFileInfo(int id);
     }
 }

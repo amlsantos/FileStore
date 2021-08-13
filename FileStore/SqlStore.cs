@@ -4,19 +4,19 @@ namespace FileStore
 {
     public class SqlStore : IStore
     {
-        public FileInfo GetFileInfo(int id, string workingDirectory)
+        public FileInfo GetFileInfo(int id)
         {
             throw new System.NotSupportedException();
         }
 
-        public string ReadAllext(string path)
+        public Maybe<string> ReadAllext(int id)
         {
             // Read and return from database
 
-            return string.Empty;
+            return new Maybe<string>();
         }
 
-        public void WriteAllText(string path, string message)
+        public void WriteAllText(int id, string message)
         {
             // Write to database
         }

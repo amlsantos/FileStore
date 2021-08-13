@@ -1,23 +1,45 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace FileStore
 {
     public class FileStore : IStore
     {
-        public virtual void WriteAllText(string path, string message)
+        private readonly DirectoryInfo _workingDirectory;
+
+        public FileStore(DirectoryInfo workingDirectory)
         {
+            if (workingDirectory == null)
+                throw new ArgumentNullException("workingDirectory");
+            if (!workingDirectory.Exists)
+                throw new ArgumentException("Boo", "workingDirectory");
+
+            this._workingDirectory = workingDirectory;
+        }
+
+        public virtual void WriteAllText(int id, string message)
+        {
+            var path = GetFileInfo(id).FullName;
+
             File.WriteAllText(path, message);
         }
 
-        public virtual string ReadAllext(string path)
+        public virtual Maybe<string> ReadAllext(int id)
         {
-            return File.ReadAllText(path);
+            var path = GetFileInfo(id);
+
+            if (!path.Exists)
+                return new Maybe<string>();
+
+            var file = File.ReadAllText(path.FullName);
+
+            return new Maybe<string>(file);
         }
 
-        public virtual FileInfo GetFileInfo(int id, string workingDirectory)
+        public virtual FileInfo GetFileInfo(int id)
         {
             return new FileInfo(
-                Path.Combine(workingDirectory, id + ".txt"));
+                Path.Combine(_workingDirectory.FullName, id + ".txt"));
         }
     }
 }
