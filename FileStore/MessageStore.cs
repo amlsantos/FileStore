@@ -5,10 +5,6 @@ namespace FileStore
 {
     public class MessageStore
     {
-        private readonly StoreCache cache;
-        private readonly StoreLogger log;
-        private readonly FileStore fileStore;
-
         public MessageStore(DirectoryInfo workingDirectory)
         {
             if (workingDirectory == null)
@@ -17,36 +13,48 @@ namespace FileStore
                 throw new ArgumentException("Boo", "workingDirectory");
 
             this.WorkingDirectory = workingDirectory;
-            this.cache = new StoreCache();
-            this.log = new StoreLogger();
-            this.fileStore = new FileStore();
         }
 
         public DirectoryInfo WorkingDirectory { get; set; }
 
         public void Save(int id, string message)
         {
-            this.log.Saving(id);
-            var file = this.fileStore.GetFileInfo(id, WorkingDirectory.FullName);
-            this.fileStore.WriteAllText(file.FullName, message);
-            this.cache.AddOrUpdate(id, message);
-            this.log.Saved(id);
+            Logger.Saving(id);
+            var file = Store.GetFileInfo(id, WorkingDirectory.FullName);
+            Store.WriteAllText(file.FullName, message);
+            Cache.AddOrUpdate(id, message);
+            Logger.Saved(id);
         }
 
         public Maybe<string> Read(int id)
         {
-            log.Reading(id);
-            var file = this.fileStore.GetFileInfo(id, WorkingDirectory.FullName);
+            Logger.Reading(id);
+            var file = Store.GetFileInfo(id, WorkingDirectory.FullName);
             if (!file.Exists)
             {
-                this.log.DidNotFound(id);
+                Logger.DidNotFound(id);
                 return new Maybe<string>();
             }
 
-            var message = this.cache.GetOrAdd(id, _ =>
-                this.fileStore.ReadAllext(file.FullName));
-            this.log.Returning(id);
+            var message = Cache.GetOrAdd(id, _ => Store.ReadAllext(file.FullName));
+            Logger.Returning(id);
+
             return new Maybe<string>(message);
+        }
+
+        protected virtual FileStore Store
+        {
+            get { return new FileStore(); }
+        }
+
+        public virtual StoreCache Cache
+        {
+            get { return new StoreCache(); }
+        }
+
+        public virtual StoreLogger Logger
+        {
+            get { return new DebugStoreLogger(); }
         }
     }
 }
