@@ -9,9 +9,9 @@ namespace FileStore
             var workingDirectory = "C:\\Users\\Andre\\Desktop";
             var fileStorage = new MessageStore(new DirectoryInfo(workingDirectory));
 
-            fileStorage.Save(1, "my message");
+            fileStorage.Save(2, "my 2nd message");
 
-            var message = fileStorage.Read(1);
+            var message = fileStorage.Read(2);
         }
     }
 }
