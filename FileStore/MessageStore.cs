@@ -42,7 +42,7 @@ namespace FileStore
             return new Maybe<string>(message);
         }
 
-        protected virtual FileStore Store
+        protected virtual IStore Store
         {
             get { return new FileStore(); }
         }
