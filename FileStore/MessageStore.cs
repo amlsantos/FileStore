@@ -3,14 +3,14 @@ using System.Linq;
 
 namespace FileStore
 {
-    public class MessageStore
+    public class MessageStore : IStoreWriter
     {
         public void Save(int id, string message)
         {
-            Logger.Saving(id);
-            Store.WriteAllText(id, message);
-            Cache.AddOrUpdate(id, message);
-            Logger.Saved(id);
+            new ToConsoleSavingStoreWriter().Save(id, message);
+            Store.Save(id, message);
+            Cache.Save(id, message);
+            new ToConsoleSavedStoreWriter().Save(id, message);
         }
 
         public Maybe<string> Read(int id)
@@ -37,9 +37,9 @@ namespace FileStore
             get { return new StoreCache(); }
         }
 
-        protected virtual StoreLogger Logger
+        protected virtual IStoreLogger Logger
         {
-            get { return new DebugStoreLogger(); }
+            get { return new ToConsoleStoreLogger(); }
         }
 
         protected virtual IFileLocator FileLocator

@@ -12,7 +12,7 @@ namespace FileStore
             this._cache = new ConcurrentDictionary<int, Maybe<string>>();
         }
 
-        public virtual void AddOrUpdate(int id, string message)
+        public virtual void Save(int id, string message)
         {
             var m = new Maybe<string>(message);
 

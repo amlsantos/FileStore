@@ -9,7 +9,7 @@
             return new Maybe<string>();
         }
 
-        public void WriteAllText(int id, string message)
+        public void Save(int id, string message)
         {
             // Write to database
         }

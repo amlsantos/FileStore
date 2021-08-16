@@ -2,16 +2,16 @@
 
 namespace FileStore
 {
-    public class DebugStoreLogger : StoreLogger
+    public class ToConsoleStoreLogger : StoreLogger
     {
-        public override void Saving(int id)
+        public override void Saving(int id, string message)
         {
-            Console.WriteLine($"Saving message {id}.", id);
+            Console.WriteLine($"Saving {message} {id}.", message, id);
         }
 
-        public override void Saved(int id)
+        public override void Saved(int id, string message)
         {
-            Console.WriteLine($"Saved message {id}.", id);
+            Console.WriteLine($"Saved {message} {id}.", message, id);
         }
 
         public override void Reading(int id)

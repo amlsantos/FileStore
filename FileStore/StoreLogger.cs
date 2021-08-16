@@ -2,16 +2,16 @@
 
 namespace FileStore
 {
-    public class StoreLogger
+    public class StoreLogger : IStoreLogger
     {
-        public virtual void Saving(int id)
+        public virtual void Saving(int id, string message)
         {
-            Log.Information("Saving message {id}.", id);
+            Log.Information("Saving {message} {id}.", message, id);
         }
 
-        public virtual void Saved(int id)
+        public virtual void Saved(int id, string message)
         {
-            Log.Information("Saved message {id}.", id);
+            Log.Information("Saved {message} {id}.", message, id);
         }
 
         public virtual void Reading(int id)

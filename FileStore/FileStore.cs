@@ -11,7 +11,7 @@ namespace FileStore
             this._fileLocator = fileLocator;
         }
 
-        public virtual void WriteAllText(int id, string message)
+        public virtual void Save(int id, string message)
         {
             var path = GetFileInfo(id);
 
