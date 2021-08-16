@@ -1,14 +1,7 @@
-﻿using System.IO;
-
-namespace FileStore
+﻿namespace FileStore
 {
     public class SqlStore : IStore
     {
-        public FileInfo GetFileInfo(int id)
-        {
-            throw new System.NotSupportedException();
-        }
-
         public Maybe<string> ReadAllext(int id)
         {
             // Read and return from database

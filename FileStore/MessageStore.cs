@@ -5,13 +5,6 @@ namespace FileStore
 {
     public class MessageStore
     {
-        public MessageStore(DirectoryInfo workingDirectory)
-        {
-            WorkingDirectory = workingDirectory;
-        }
-
-        public DirectoryInfo WorkingDirectory { get; set; }
-
         public void Save(int id, string message)
         {
             Logger.Saving(id);
@@ -36,17 +29,22 @@ namespace FileStore
 
         protected virtual IStore Store
         {
-            get { return new FileStore(WorkingDirectory); }
+            get { return new FileStore(FileLocator); }
         }
 
-        public virtual IStoreCache Cache
+        protected virtual IStoreCache Cache
         {
             get { return new StoreCache(); }
         }
 
-        public virtual StoreLogger Logger
+        protected virtual StoreLogger Logger
         {
             get { return new DebugStoreLogger(); }
+        }
+
+        protected virtual IFileLocator FileLocator
+        {
+            get { return new FileLocator(new DirectoryInfo("C:\\Users\\Andre\\Desktop")); }
         }
     }
 }

@@ -1,27 +1,21 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 
 namespace FileStore
 {
-    public class FileStore : IStore
+    public class FileStore : IStore, IFileLocator
     {
-        private readonly DirectoryInfo _workingDirectory;
+        private readonly IFileLocator _fileLocator;
 
-        public FileStore(DirectoryInfo workingDirectory)
+        public FileStore(IFileLocator fileLocator)
         {
-            if (workingDirectory == null)
-                throw new ArgumentNullException("workingDirectory");
-            if (!workingDirectory.Exists)
-                throw new ArgumentException("Boo", "workingDirectory");
-
-            this._workingDirectory = workingDirectory;
+            this._fileLocator = fileLocator;
         }
 
         public virtual void WriteAllText(int id, string message)
         {
-            var path = GetFileInfo(id).FullName;
+            var path = GetFileInfo(id);
 
-            File.WriteAllText(path, message);
+            File.WriteAllText(path.FullName, message);
         }
 
         public virtual Maybe<string> ReadAllext(int id)
@@ -36,10 +30,9 @@ namespace FileStore
             return new Maybe<string>(file);
         }
 
-        public virtual FileInfo GetFileInfo(int id)
+        public FileInfo GetFileInfo(int id)
         {
-            return new FileInfo(
-                Path.Combine(_workingDirectory.FullName, id + ".txt"));
+            return _fileLocator.GetFileInfo(id);
         }
     }
 }
