@@ -6,10 +6,24 @@ namespace FileStore
     {
         static void Main(string[] args)
         {
-            var fileStorage = new MessageStore(new DirectoryInfo("C:\\Users\\Andre\\Desktop"));
+            var logger = new Logger();
+            var fileStorage = new FileStore(
+                new FileLocator(
+                    new DirectoryInfo("C:\\Users\\Andre\\Desktop")));
+            var cache = new StoreCache(
+                fileStorage,
+                fileStorage);
+            var log = new StoreLogger(
+                logger,
+                cache,
+                cache);
+            var msgStore = new MessageStore(
+                log,
+                log,
+                fileStorage);
 
-            fileStorage.Save(2, "my 2nd message");
-            fileStorage.Read(2);
+            msgStore.Save(1, "my 1rst message");
+            var msg = msgStore.Read(1);
         }
     }
 }

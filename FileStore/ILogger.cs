@@ -1,6 +1,6 @@
 ﻿namespace FileStore
 {
-    public interface IStoreLogger
+    public interface ILogger
     {
         public void Saving(int id, string message);
         public void Saved(int id, string message);
