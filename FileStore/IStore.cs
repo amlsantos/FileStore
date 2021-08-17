@@ -2,7 +2,7 @@
 {
     public interface IStore
     {
-        public Maybe<string> ReadAllext(int id);
         public void Save(int id, string message);
+        public Maybe<string> Read(int id);
     }
 }

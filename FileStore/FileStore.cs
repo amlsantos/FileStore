@@ -2,7 +2,7 @@
 
 namespace FileStore
 {
-    public class FileStore : IStore, IFileLocator
+    public class FileStore : IStore, IFileLocator, IStoreWriter, IStoreReader
     {
         private readonly IFileLocator _fileLocator;
 
@@ -18,7 +18,7 @@ namespace FileStore
             File.WriteAllText(path.FullName, message);
         }
 
-        public virtual Maybe<string> ReadAllext(int id)
+        public virtual Maybe<string> Read(int id)
         {
             var path = GetFileInfo(id);
 

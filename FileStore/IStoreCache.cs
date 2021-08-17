@@ -1,10 +1,8 @@
-﻿using System;
-
-namespace FileStore
+﻿namespace FileStore
 {
     public interface IStoreCache
     {
         void Save(int id, string message);
-        Maybe<string> GetOrAdd(int id, Func<int, Maybe<string>> messageFactory);
+        Maybe<string> Read(int id);
     }
 }

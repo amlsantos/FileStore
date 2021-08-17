@@ -2,7 +2,7 @@
 {
     public class SqlStore : IStore
     {
-        public Maybe<string> ReadAllext(int id)
+        public Maybe<string> Read(int id)
         {
             // Read and return from database
 

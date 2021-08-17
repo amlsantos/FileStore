@@ -1,50 +1,71 @@
 ﻿using System.IO;
-using System.Linq;
 
 namespace FileStore
 {
-    public class MessageStore : IStoreWriter
+    public class MessageStore
     {
+        private readonly IStoreCache _cache;
+        private readonly IStoreLogger _log;
+        private readonly IStore _store;
+        private readonly IFileLocator _fileLocator;
+        private readonly IStoreWriter _writer;
+        private readonly IStoreReader _reader;
+
+        public MessageStore(DirectoryInfo workingDirectory)
+        {
+            WorkingDirectory = workingDirectory;
+
+            var fileStore = new FileStore(new FileLocator(workingDirectory));
+            var c = new StoreCache(fileStore, fileStore);
+            _cache = c;
+            var l = new StoreLogger(c, c);
+            _log = l;
+            _store = fileStore;
+            _fileLocator = fileStore;
+            _reader = l;
+            _writer = l;
+        }
+
         public void Save(int id, string message)
         {
-            new ToConsoleSavingStoreWriter().Save(id, message);
-            Store.Save(id, message);
-            Cache.Save(id, message);
-            new ToConsoleSavedStoreWriter().Save(id, message);
+            _writer.Save(id, message);
         }
 
         public Maybe<string> Read(int id)
         {
-            Logger.Reading(id);
-            var message = Cache.GetOrAdd(id,
-                _ => Store.ReadAllext(id));
-
-            if (message.Any())
-                Logger.Returning(id);
-            else
-                Logger.DidNotFound(id);
-
-            return message;
+            return _reader.Read(id);
         }
 
-        protected virtual IStore Store
+        protected DirectoryInfo WorkingDirectory { get; }
+
+        public virtual IStore Store
         {
-            get { return new FileStore(FileLocator); }
+            get { return _store; }
         }
 
         protected virtual IStoreCache Cache
         {
-            get { return new StoreCache(); }
+            get { return _cache; }
         }
 
-        protected virtual IStoreLogger Logger
+        protected virtual IStoreLogger Log
         {
-            get { return new ToConsoleStoreLogger(); }
+            get { return _log; }
         }
 
         protected virtual IFileLocator FileLocator
         {
-            get { return new FileLocator(new DirectoryInfo("C:\\Users\\Andre\\Desktop")); }
+            get { return _fileLocator; }
+        }
+
+        public virtual IStoreWriter Writer
+        {
+            get { return _writer; }
+        }
+
+        public IStoreReader Reader
+        {
+            get { return _reader; }
         }
     }
 }
