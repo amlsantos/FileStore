@@ -1,15 +1,17 @@
-﻿using System.IO;
+﻿using FileStore;
 
-namespace FileStore;
+namespace UI;
 
-class Program
+public static class Program
 {
-    static void Main(string[] args)
+    private const string Directory = "C:\\Users\\Andre\\Desktop";
+
+    public static void Main(string[] args)
     {
         var logger = new Logger();
-        var fileStorage = new FileStore(
+        var fileStorage = new FileStore.FileStore(
             new FileLocator(
-                new DirectoryInfo("C:\\Users\\Andre\\Desktop")));
+                new DirectoryInfo(Directory)));
         var cache = new StoreCache(
             fileStorage,
             fileStorage);

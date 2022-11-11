@@ -20,6 +20,6 @@ public class FileLocator : IFileLocator
     public FileInfo GetFileInfo(int id)
     {
         return new FileInfo(
-            Path.Combine(_workingDirectory.FullName, id + ".txt")); ;
+            Path.Combine(_workingDirectory.FullName, id + ".txt"));
     }
 }
