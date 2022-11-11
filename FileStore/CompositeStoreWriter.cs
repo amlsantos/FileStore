@@ -1,20 +1,19 @@
-﻿namespace FileStore
+﻿namespace FileStore;
+
+public class CompositeStoreWriter : IStoreWriter
 {
-    public class CompositeStoreWriter : IStoreWriter
+    private readonly IStoreWriter[] _writers;
+
+    public CompositeStoreWriter(params IStoreWriter[] writers)
     {
-        private readonly IStoreWriter[] _writers;
+        _writers = writers;
+    }
 
-        public CompositeStoreWriter(params IStoreWriter[] writers)
+    public void Save(int id, string message)
+    {
+        foreach (var writer in _writers)
         {
-            _writers = writers;
-        }
-
-        public void Save(int id, string message)
-        {
-            foreach (var writer in _writers)
-            {
-                writer.Save(id, message);
-            }
+            writer.Save(id, message);
         }
     }
 }

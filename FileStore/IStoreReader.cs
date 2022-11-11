@@ -1,7 +1,6 @@
-﻿namespace FileStore
+﻿namespace FileStore;
+
+public interface IStoreReader
 {
-    public interface IStoreReader
-    {
-        Maybe<string> Read(int id);
-    }
+    Maybe<string> Read(int id);
 }

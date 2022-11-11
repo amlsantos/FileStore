@@ -1,7 +1,6 @@
-﻿namespace FileStore
+﻿namespace FileStore;
+
+public interface IStoreWriter
 {
-    public interface IStoreWriter
-    {
-        public void Save(int id, string message);
-    }
+    public void Save(int id, string message);
 }
